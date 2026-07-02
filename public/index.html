@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IngáPet - Gestão de Estoque</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#fff7ed', 100: '#ffedd5', 500: '#f97316', 600: '#ea580c', 700: '#c2410c' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .sidebar-link.active { background: #f97316; color: white; }
+    .sidebar-link.active svg { color: white; }
+    .modal { display: none; }
+    .modal.active { display: flex; }
+    .stock-low { background: #fef2f2; border-color: #fecaca; }
+    .stock-ok { background: #f0fdf4; border-color: #bbf7d0; }
+    .stock-empty { background: #fefce8; border-color: #fef08a; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-900 text-white min-h-screen fixed left-0 top-0 bottom-0 overflow-y-auto z-40">
+    <div class="p-6 border-b border-gray-800">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg">IngáPet</h1>
+          <p class="text-xs text-gray-400">Gestão de Estoque</p>
+        </div>
+      </div>
+    </div>
+    <nav class="p-4 space-y-1">
+      <a href="#" onclick="showPage('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+        Dashboard
+      </a>
+      <a href="#" onclick="showPage('products')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        Produtos
+      </a>
+      <a href="#" onclick="showPage('stock')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+        Entrada/Saída
+      </a>
+      <a href="#" onclick="showPage('movements')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Histórico
+      </a>
+      <a href="#" onclick="showPage('orders')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/></svg>
+        Pedidos WhatsApp
+      </a>
+      <a href="#" onclick="showPage('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Configurações
+      </a>
+    </nav>
+    <div class="p-4 mt-auto border-t border-gray-800">
+      <a href="https://cdwvdenu.mule.page/" target="_blank" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+        Ver Site
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 flex-1 p-8">
+
+    <!-- PAGE: Dashboard -->
+    <div id="page-dashboard" class="page active">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Dashboard</h2>
+        <p class="text-gray-500">Visão geral do estoque</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="stats-cards">
+        <div class="bg-white rounded-xl p-6 shadow-sm border">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sm font-medium text-gray-500">Total Produtos</span>
+            <span class="text-2xl"></span>
+          </div>
+          <p id="stat-total" class="text-3xl font-bold text-gray-900">--</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow-sm border">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sm font-medium text-gray-500">Itens em Estoque</span>
+            <span class="text-2xl"></span>
+          </div>
+          <p id="stat-items" class="text-3xl font-bold text-gray-900">--</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow-sm border">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sm font-medium text-gray-500">Estoque Baixo</span>
+            <span class="text-2xl"></span>
+          </div>
+          <p id="stat-low" class="text-3xl font-bold text-red-500">--</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow-sm border">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sm font-medium text-gray-500">Categorias</span>
+            <span class="text-2xl"></span>
+          </div>
+          <p id="stat-cats" class="text-3xl font-bold text-gray-900">--</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Estoque Baixo -->
+        <div class="bg-white rounded-xl shadow-sm border">
+          <div class="px-6 py-4 border-b">
+            <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+              Estoque Baixo
+            </h3>
+          </div>
+          <div id="low-stock-list" class="p-6 space-y-3">
+            <p class="text-gray-400 text-center py-4">Carregando...</p>
+          </div>
+        </div>
+
+        <!-- Movimentações Recentes -->
+        <div class="bg-white rounded-xl shadow-sm border">
+          <div class="px-6 py-4 border-b">
+            <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Últimas Movimentações
+            </h3>
+          </div>
+          <div id="recent-movements" class="p-6 space-y-3">
+            <p class="text-gray-400 text-center py-4">Carregando...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Products -->
+    <div id="page-products" class="page">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">Produtos</h2>
+          <p class="text-gray-500">Gerencie seu catálogo</p>
+        </div>
+        <button onclick="openProductModal()" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          Novo Produto
+        </button>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap gap-4">
+        <div class="flex-1 min-w-[200px]">
+          <input type="text" id="search-products" placeholder="Buscar produto..." class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none" oninput="filterProducts()">
+        </div>
+        <select id="filter-category" class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" onchange="filterProducts()">
+          <option value="all">Todas Categorias</option>
+          <option value="gas">Gás e Carvão</option>
+          <option value="agua">Água Mineral</option>
+          <option value="pets">Produtos para Pets</option>
+          <option value="casa">Casa e Jardim</option>
+        </select>
+        <select id="filter-stock" class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" onchange="filterProducts()">
+          <option value="all">Todo Estoque</option>
+          <option value="low">Estoque Baixo</option>
+          <option value="empty">Sem Estoque</option>
+          <option value="ok">Em Estoque</option>
+        </select>
+      </div>
+
+      <!-- Products Table -->
+      <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produto</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoria</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preço</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Estoque</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="products-table" class="divide-y">
+              <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Stock Movement -->
+    <div id="page-stock" class="page">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Entrada e Saída</h2>
+        <p class="text-gray-500">Registrar movimentações de estoque</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Entrada -->
+        <div class="bg-white rounded-xl shadow-sm border p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            </span>
+            Entrada de Mercadoria
+          </h3>
+          <form id="form-stock-in" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Produto</label>
+              <select id="stock-in-product" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" required>
+                <option value="">Selecione um produto...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+              <input type="number" id="stock-in-qty" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Motivo</label>
+              <input type="text" id="stock-in-reason" placeholder="Ex: Compra de fornecedor" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+              <textarea id="stock-in-notes" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-lg transition">
+              Registrar Entrada
+            </button>
+          </form>
+        </div>
+
+        <!-- Saída -->
+        <div class="bg-white rounded-xl shadow-sm border p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 bg-red-100 text-red-600 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/></svg>
+            </span>
+            Saída de Mercadoria
+          </h3>
+          <form id="form-stock-out" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Produto</label>
+              <select id="stock-out-product" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" required>
+                <option value="">Selecione um produto...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+              <input type="number" id="stock-out-qty" min="1" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Motivo</label>
+              <input type="text" id="stock-out-reason" placeholder="Ex: Venda, Devolução, Perda" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+              <textarea id="stock-out-notes" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-lg transition">
+              Registrar Saída
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Movements History -->
+    <div id="page-movements" class="page">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Histórico de Movimentações</h2>
+        <p class="text-gray-500">Todas as entradas e saídas</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produto</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Tipo</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Qtd</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Referência</th>
+              </tr>
+            </thead>
+            <tbody id="movements-table" class="divide-y">
+              <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Orders -->
+    <div id="page-orders" class="page">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Pedidos WhatsApp</h2>
+        <p class="text-gray-500">Pedidos recebidos via chatbot</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Itens</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table" class="divide-y">
+              <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Settings -->
+    <div id="page-settings" class="page">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Configurações</h2>
+        <p class="text-gray-500">Configurações do sistema</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border p-6 max-w-2xl">
+        <h3 class="text-lg font-semibold mb-4">Integrações</h3>
+        <div class="space-y-4">
+          <div class="p-4 border rounded-lg">
+            <h4 class="font-medium mb-2">Site IngáPet</h4>
+            <p class="text-sm text-gray-500 mb-2">Os produtos deste sistema sincronizam automaticamente com o site.</p>
+            <a href="https://cdwvdenu.mule.page/" target="_blank" class="text-sm text-orange-500 hover:text-orange-600">cdwvdenu.mule.page</a>
+          </div>
+          <div class="p-4 border rounded-lg">
+            <h4 class="font-medium mb-2">Chatbot WhatsApp</h4>
+            <p class="text-sm text-gray-500">Pedidos via WhatsApp verificam estoque em tempo real.</p>
+            <p class="text-sm text-gray-500 mt-2">API: <code class="bg-gray-100 px-1 rounded text-xs">/api/bot/products</code></p>
+          </div>
+          <div class="p-4 border rounded-lg">
+            <h4 class="font-medium mb-2">Exportar Dados</h4>
+            <p class="text-sm text-gray-500 mb-2">Exporte os dados para integrar com outros sistemas.</p>
+            <a href="/api/export/site-data" target="_blank" class="text-sm text-orange-500 hover:text-orange-600">/api/export/site-data</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: Produto -->
+  <div id="modal-product" class="modal fixed inset-0 bg-black/50 items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div class="px-6 py-4 border-b flex items-center justify-between">
+        <h3 id="modal-product-title" class="font-semibold text-gray-900">Novo Produto</h3>
+        <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="form-product" class="p-6 space-y-4">
+        <input type="hidden" id="product-id">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+          <input type="text" id="product-name" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
+            <select id="product-category" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+              <option value="gas">Gás e Carvão</option>
+              <option value="agua">Água Mineral</option>
+              <option value="pets">Produtos para Pets</option>
+              <option value="casa">Casa e Jardim</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+            <input type="text" id="product-brand" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Preço *</label>
+            <input type="text" id="product-price" required placeholder="R$ 0,00" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Preço Delivery</label>
+            <input type="text" id="product-price-delivery" placeholder="R$ 0,00" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+          <textarea id="product-description" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Estoque Inicial</label>
+            <input type="number" id="product-initial-stock" min="0" value="0" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Estoque Mínimo</label>
+            <input type="number" id="product-min-stock" min="0" value="5" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Foto do Produto</label>
+          <div id="product-image-preview" class="w-full h-32 border-2 border-dashed rounded-lg flex items-center justify-center text-gray-400 cursor-pointer hover:border-orange-500 transition" onclick="document.getElementById('product-image').click()">
+            <span id="image-preview-text">Clique para adicionar foto</span>
+          </div>
+          <input type="file" id="product-image" accept="image/*" class="hidden" onchange="previewImage(this)">
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="product-featured" class="rounded text-orange-500">
+          <label for="product-featured" class="text-sm font-medium text-gray-700">Produto em destaque</label>
+        </div>
+        <div class="flex gap-3 pt-4">
+          <button type="button" onclick="closeProductModal()" class="flex-1 px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 transition">Cancelar</button>
+          <button type="submit" class="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3">
+      <span id="toast-icon"></span>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // === STATE ===
+    let products = [];
+    let currentEditId = null;
+
+    // === NAVIGATION ===
+    function showPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      document.querySelectorAll('.sidebar-link').forEach(l => {
+        l.classList.remove('active');
+        l.classList.add('text-gray-300');
+      });
+      event.target.closest('.sidebar-link').classList.add('active');
+      event.target.closest('.sidebar-link').classList.remove('text-gray-300');
+
+      // Load data for page
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'products') loadProducts();
+      if (page === 'stock') loadStockForm();
+      if (page === 'movements') loadMovements();
+      if (page === 'orders') loadOrders();
+    }
+
+    // === API CALLS ===
+    async function api(url, options = {}) {
+      try {
+        const res = await fetch(url, options);
+        return await res.json();
+      } catch (err) {
+        console.error('API Error:', err);
+        toast('Erro na comunicação', 'error');
+        return { success: false };
+      }
+    }
+
+    // === DASHBOARD ===
+    async function loadDashboard() {
+      const [summary, movements] = await Promise.all([
+        api('/api/stock/summary'),
+        api('/api/stock/movements?limit=10'),
+      ]);
+
+      if (summary.success) {
+        const { summary: s, lowStockItems, recentMovements } = summary.data;
+        document.getElementById('stat-total').textContent = s.total_products || 0;
+        document.getElementById('stat-items').textContent = s.total_items || 0;
+        document.getElementById('stat-low').textContent = s.low_stock || 0;
+        document.getElementById('stat-cats').textContent = s.categories || 0;
+
+        // Low stock list
+        const lowEl = document.getElementById('low-stock-list');
+        if (lowStockItems.length === 0) {
+          lowEl.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhum produto com estoque baixo</p>';
+        } else {
+          lowEl.innerHTML = lowStockItems.map(item => {
+            const pct = Math.round((item.quantity / item.min_quantity) * 100);
+            const color = pct <= 50 ? 'red' : 'yellow';
+            const catEmoji = { gas: '🔥', agua: '💧', pets: '🐾', casa: '🏡' }[item.category] || '📦';
+            return `
+              <div class="flex items-center justify-between p-3 rounded-lg bg-${color}-50 border border-${color}-200">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">${catEmoji}</span>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">${item.name}</p>
+                    <p class="text-xs text-gray-500">${item.quantity} de ${item.min_quantity} mín.</p>
+                  </div>
+                </div>
+                <button onclick="openStockIn('${item.id}')" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full">+ Entrada</button>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Recent movements
+        const movEl = document.getElementById('recent-movements');
+        const movs = summary.data.recentMovements;
+        if (movs.length === 0) {
+          movEl.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhuma movimentação</p>';
+        } else {
+          movEl.innerHTML = movs.map(m => `
+            <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm ${m.type === 'in' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
+                  ${m.type === 'in' ? '↑' : m.type === 'out' ? '↓' : '±'}
+                </span>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">${m.product_name}</p>
+                  <p class="text-xs text-gray-500">${m.reason || 'Sem motivo'} - ${new Date(m.created_at).toLocaleDateString('pt-BR')}</p>
+                </div>
+              </div>
+              <span class="text-sm font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}">${m.type === 'in' ? '+' : '-'}${m.quantity}</span>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // === PRODUCTS ===
+    async function loadProducts() {
+      const res = await api('/api/products');
+      if (res.success) {
+        products = res.data;
+        renderProducts(products);
+      }
+    }
+
+    function renderProducts(list) {
+      const tbody = document.getElementById('products-table');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nenhum produto encontrado</td></tr>';
+        return;
+      }
+
+      const catNames = { gas: 'Gás e Carvão', agua: 'Água Mineral', pets: 'Pets', casa: 'Casa e Jardim' };
+      const catEmoji = { gas: '🔥', agua: '💧', pets: '🐾', casa: '🏡' };
+
+      tbody.innerHTML = list.map(p => {
+        const stockClass = p.quantity === 0 ? 'stock-empty' : p.quantity <= p.min_quantity ? 'stock-low' : 'stock-ok';
+        const statusText = p.quantity === 0 ? 'Sem estoque' : p.quantity <= p.min_quantity ? 'Estoque baixo' : 'Em estoque';
+        const statusColor = p.quantity === 0 ? 'text-yellow-600 bg-yellow-50' : p.quantity <= p.min_quantity ? 'text-red-600 bg-red-50' : 'text-green-600 bg-green-50';
+
+        return `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+                  ${p.image ? `<img src="${p.image}" class="w-full h-full object-cover">` : `<span class="text-lg">${catEmoji[p.category] || '📦'}</span>`}
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">${p.name}</p>
+                  <p class="text-xs text-gray-500">${p.description ? p.description.substring(0, 40) + '...' : ''}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-600">${catEmoji[p.category] || ''} ${catNames[p.category] || p.category}</td>
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">${p.price}</td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-block px-3 py-1 rounded-full text-sm font-medium ${stockClass} border">${p.quantity || 0}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-xs font-medium px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button onclick="editProduct('${p.id}')" class="text-blue-500 hover:text-blue-700 p-1" title="Editar">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+                </button>
+                <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 p-1" title="Excluir">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterProducts() {
+      const search = document.getElementById('search-products').value.toLowerCase();
+      const category = document.getElementById('filter-category').value;
+      const stock = document.getElementById('filter-stock').value;
+
+      let filtered = products.filter(p => {
+        const matchSearch = p.name.toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search);
+        const matchCat = category === 'all' || p.category === category;
+        const matchStock = stock === 'all' ||
+          (stock === 'low' && p.quantity > 0 && p.quantity <= p.min_quantity) ||
+          (stock === 'empty' && p.quantity === 0) ||
+          (stock === 'ok' && p.quantity > p.min_quantity);
+        return matchSearch && matchCat && matchStock;
+      });
+
+      renderProducts(filtered);
+    }
+
+    function openProductModal(product = null) {
+      currentEditId = product ? product.id : null;
+      document.getElementById('modal-product-title').textContent = product ? 'Editar Produto' : 'Novo Produto';
+      document.getElementById('product-id').value = product ? product.id : '';
+      document.getElementById('product-name').value = product ? product.name : '';
+      document.getElementById('product-category').value = product ? product.category : 'pets';
+      document.getElementById('product-brand').value = product ? (product.brand || '') : '';
+      document.getElementById('product-price').value = product ? product.price : '';
+      document.getElementById('product-price-delivery').value = product ? (product.price_delivery || '') : '';
+      document.getElementById('product-description').value = product ? (product.description || '') : '';
+      document.getElementById('product-initial-stock').value = product ? (product.quantity || 0) : 0;
+      document.getElementById('product-min-stock').value = product ? (product.min_quantity || 5) : 5;
+      document.getElementById('product-featured').checked = product ? !!product.featured : false;
+
+      const preview = document.getElementById('product-image-preview');
+      const previewText = document.getElementById('image-preview-text');
+      if (product && product.image) {
+        preview.innerHTML = `<img src="${product.image}" class="w-full h-full object-cover rounded-lg">`;
+      } else {
+        preview.innerHTML = '<span id="image-preview-text">Clique para adicionar foto</span>';
+      }
+
+      document.getElementById('modal-product').classList.add('active');
+    }
+
+    function closeProductModal() {
+      document.getElementById('modal-product').classList.remove('active');
+      currentEditId = null;
+    }
+
+    function editProduct(id) {
+      const product = products.find(p => p.id === id);
+      if (product) openProductModal(product);
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Tem certeza que deseja remover este produto?')) return;
+      const res = await api(`/api/products/${id}`, { method: 'DELETE' });
+      if (res.success) {
+        toast('Produto removido', 'success');
+        loadProducts();
+      }
+    }
+
+    function previewImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('product-image-preview').innerHTML =
+            `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Save product form
+    document.getElementById('form-product').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('name', document.getElementById('product-name').value);
+      formData.append('category', document.getElementById('product-category').value);
+      formData.append('brand', document.getElementById('product-brand').value);
+      formData.append('price', document.getElementById('product-price').value);
+      formData.append('price_delivery', document.getElementById('product-price-delivery').value);
+      formData.append('description', document.getElementById('product-description').value);
+      formData.append('initial_stock', document.getElementById('product-initial-stock').value);
+      formData.append('min_quantity', document.getElementById('product-min-stock').value);
+      formData.append('featured', document.getElementById('product-featured').checked);
+
+      const imageInput = document.getElementById('product-image');
+      if (imageInput.files[0]) {
+        formData.append('image', imageInput.files[0]);
+      }
+
+      const id = document.getElementById('product-id').value;
+      const url = id ? `/api/products/${id}` : '/api/products';
+      const method = id ? 'PUT' : 'POST';
+
+      const res = await api(url, { method, body: formData });
+      if (res.success) {
+        toast(id ? 'Produto atualizado!' : 'Produto criado!', 'success');
+        closeProductModal();
+        loadProducts();
+      }
+    });
+
+    // === STOCK MOVEMENT ===
+    async function loadStockForm() {
+      const res = await api('/api/products');
+      if (res.success) {
+        const options = res.data.map(p =>
+          `<option value="${p.id}">${p.name} (Estoque: ${p.quantity})</option>`
+        ).join('');
+        document.getElementById('stock-in-product').innerHTML = '<option value="">Selecione um produto...</option>' + options;
+        document.getElementById('stock-out-product').innerHTML = '<option value="">Selecione um produto...</option>' + options;
+      }
+    }
+
+    function openStockIn(productId) {
+      showPage('stock');
+      document.getElementById('stock-in-product').value = productId;
+      document.getElementById('stock-in-qty').focus();
+    }
+
+    // Stock In form
+    document.getElementById('form-stock-in').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        product_id: document.getElementById('stock-in-product').value,
+        type: 'in',
+        quantity: document.getElementById('stock-in-qty').value,
+        reason: document.getElementById('stock-in-reason').value,
+        notes: document.getElementById('stock-in-notes').value,
+      };
+      const res = await api('/api/stock/move', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (res.success) {
+        toast(res.message, 'success');
+        e.target.reset();
+        loadStockForm();
+      }
+    });
+
+    // Stock Out form
+    document.getElementById('form-stock-out').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        product_id: document.getElementById('stock-out-product').value,
+        type: 'out',
+        quantity: document.getElementById('stock-out-qty').value,
+        reason: document.getElementById('stock-out-reason').value,
+        notes: document.getElementById('stock-out-notes').value,
+      };
+      const res = await api('/api/stock/move', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (res.success) {
+        toast(res.message, 'success');
+        e.target.reset();
+        loadStockForm();
+      }
+    });
+
+    // === MOVEMENTS HISTORY ===
+    async function loadMovements() {
+      const res = await api('/api/stock/movements');
+      if (res.success) {
+        const tbody = document.getElementById('movements-table');
+        if (res.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nenhuma movimentação</td></tr>';
+          return;
+        }
+        tbody.innerHTML = res.data.map(m => {
+          const typeLabel = m.type === 'in' ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Entrada</span>' : m.type === 'out' ? '<span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">Saída</span>' : '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">Ajuste</span>';
+          return `
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm text-gray-500">${new Date(m.created_at).toLocaleString('pt-BR')}</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">${m.product_name}</td>
+              <td class="px-6 py-4 text-center">${typeLabel}</td>
+              <td class="px-6 py-4 text-center font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}">${m.type === 'in' ? '+' : '-'}${m.quantity}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">${m.reason || '-'}</td>
+              <td class="px-6 py-4 text-sm text-gray-500">${m.reference || '-'}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // === ORDERS ===
+    async function loadOrders() {
+      const res = await api('/api/orders');
+      if (res.success) {
+        const tbody = document.getElementById('orders-table');
+        if (res.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nenhum pedido ainda</td></tr>';
+          return;
+        }
+        const statusColors = { pending: 'bg-yellow-100 text-yellow-700', confirmed: 'bg-blue-100 text-blue-700', delivered: 'bg-green-100 text-green-700', cancelled: 'bg-red-100 text-red-700' };
+        const statusLabels = { pending: 'Pendente', confirmed: 'Confirmado', delivered: 'Entregue', cancelled: 'Cancelado' };
+
+        tbody.innerHTML = res.data.map(o => {
+          let items = [];
+          try { items = JSON.parse(o.items); } catch(e) {}
+          const itemsText = items.map(i => `${i.name} (${i.quantity})`).join(', ');
+
+          return `
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm text-gray-500">${new Date(o.created_at).toLocaleString('pt-BR')}</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">${o.phone}</td>
+              <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">${itemsText || '-'}</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">${o.total || '-'}</td>
+              <td class="px-6 py-4 text-center"><span class="text-xs font-medium px-2 py-1 rounded-full ${statusColors[o.status] || ''}">${statusLabels[o.status] || o.status}</span></td>
+              <td class="px-6 py-4 text-right">
+                <select onchange="updateOrderStatus(${o.id}, this.value)" class="text-xs border rounded-lg px-2 py-1">
+                  <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pendente</option>
+                  <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>Confirmado</option>
+                  <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Entregue</option>
+                  <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelado</option>
+                </select>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    async function updateOrderStatus(id, status) {
+      const res = await api(`/api/orders/${id}/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+      if (res.success) toast('Status atualizado', 'success');
+    }
+
+    // === TOAST ===
+    function toast(message, type = 'info') {
+      const el = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const msg = document.getElementById('toast-message');
+      msg.textContent = message;
+      icon.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+
+    // === INIT ===
+    loadDashboard();
+  </script>
+</body>
+</html>

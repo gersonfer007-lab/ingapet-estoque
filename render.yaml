@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ingapet-estoque
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: WEBHOOK_VERIFY_TOKEN
+        value: ingapet_verify_2024
