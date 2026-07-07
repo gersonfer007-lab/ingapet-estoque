@@ -101,6 +101,28 @@ async function initDatabase() {
     )
   `);
 
+  // Tabela de usuarios
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      name TEXT NOT NULL,
+      role TEXT DEFAULT 'admin',
+      created_at TEXT DEFAULT (datetime('now', 'localtime'))
+    )
+  `);
+
+  // Criar usuario admin padrao se nao existir
+  const userCount = db.exec('SELECT COUNT(*) as c FROM users');
+  const uCount = userCount.length > 0 ? userCount[0].values[0][0] : 0;
+  if (uCount === 0) {
+    const bcrypt = require('bcryptjs');
+    const hash = bcrypt.hashSync('ingapet2024', 10);
+    db.run('INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, ?)',
+      ['admin', hash, 'Administrador', 'admin']);
+  }
+
   // Dados iniciais de exemplo (se vazio)
   const countResult = db.exec('SELECT COUNT(*) as c FROM products');
   const count = countResult.length > 0 ? countResult[0].values[0][0] : 0;
@@ -337,6 +359,15 @@ function updateOrderStatus(id, status) {
   saveDb();
 }
 
+function getUserByUsername(username) {
+  return queryOne('SELECT * FROM users WHERE username = ?', [username]);
+}
+
+function updateUserPassword(id, hashedPassword) {
+  db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, id]);
+  saveDb();
+}
+
 module.exports = {
   initDatabase,
   getAllProducts,
@@ -350,5 +381,7 @@ module.exports = {
   createOrder,
   getOrders,
   updateOrderStatus,
+  getUserByUsername,
+  updateUserPassword,
   getDb
 };

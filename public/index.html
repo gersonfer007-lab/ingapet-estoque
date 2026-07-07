@@ -30,7 +30,42 @@
     .stock-empty { background: #fefce8; border-color: #fef08a; }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex">
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- ============================================ -->
+  <!-- TELA DE LOGIN -->
+  <!-- ============================================ -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900">IngaPet</h1>
+        <p class="text-gray-500 text-sm">Sistema de Gestao de Estoque</p>
+      </div>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+          <input type="text" id="login-username" required autocomplete="username" placeholder="admin" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none text-lg">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+          <input type="password" id="login-password" required autocomplete="current-password" placeholder="Digite sua senha" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none text-lg">
+        </div>
+        <div id="login-error" class="text-red-500 text-sm text-center hidden"></div>
+        <button type="submit" id="login-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition text-lg">
+          Entrar
+        </button>
+      </form>
+      <p class="text-center text-xs text-gray-400 mt-6">Acesso restrito a funcionarios autorizados</p>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- APP PRINCIPAL (escondido ate fazer login) -->
+  <!-- ============================================ -->
+  <div id="app-main" class="min-h-screen flex" style="display:none;">
 
   <!-- Sidebar -->
   <aside class="w-64 bg-gray-900 text-white min-h-screen fixed left-0 top-0 bottom-0 overflow-y-auto z-40">
@@ -72,6 +107,14 @@
       </a>
     </nav>
     <div class="p-4 mt-auto border-t border-gray-800">
+      <div class="px-4 py-2 mb-2">
+        <p class="text-xs text-gray-500">Logado como:</p>
+        <p id="user-display-name" class="text-sm text-white font-medium">Admin</p>
+      </div>
+      <a href="#" onclick="doLogout()" class="flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 rounded-lg transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+        Sair
+      </a>
       <a href="https://cdwvdenu.mule.page/" target="_blank" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white transition">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
         Ver Site
@@ -365,6 +408,57 @@
 
   </main>
 
+  </div><!-- fim app-main -->
+
+  <!-- MODAL: Atualizar Foto e Preco Rapido -->
+  <div id="modal-photo-price" class="modal fixed inset-0 bg-black/50 items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full">
+      <div class="px-6 py-4 border-b flex items-center justify-between">
+        <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+          <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+          Atualizar Foto e Preco
+        </h3>
+        <button onclick="closePhotoPrice()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="form-photo-price" class="p-6 space-y-4">
+        <input type="hidden" id="pp-product-id">
+        <div class="text-center">
+          <p id="pp-product-name" class="text-lg font-semibold text-gray-900 mb-1"></p>
+          <p id="pp-product-current" class="text-sm text-gray-500"></p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nova Foto do Produto</label>
+          <div id="pp-image-preview" class="w-full h-40 border-2 border-dashed rounded-xl flex items-center justify-center text-gray-400 cursor-pointer hover:border-green-500 transition bg-gray-50" onclick="document.getElementById('pp-image-input').click()">
+            <div class="text-center">
+              <svg class="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+              <span class="text-sm">Clique para tirar ou escolher foto</span>
+            </div>
+          </div>
+          <input type="file" id="pp-image-input" accept="image/*" capture="environment" class="hidden" onchange="previewPhotoPrice(this)">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Preco Loja</label>
+            <input type="text" id="pp-price" placeholder="R$ 0,00" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-lg font-bold text-center">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Preco Delivery</label>
+            <input type="text" id="pp-price-delivery" placeholder="R$ 0,00" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-lg font-bold text-center">
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closePhotoPrice()" class="flex-1 px-4 py-3 border rounded-xl text-gray-600 hover:bg-gray-50 transition">Cancelar</button>
+          <button type="submit" class="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition font-bold flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: Produto -->
   <div id="modal-product" class="modal fixed inset-0 bg-black/50 items-center justify-center z-50 p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
@@ -592,6 +686,9 @@
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-2">
+                <button onclick="openQuickPhotoPrice('${p.id}')" class="text-green-500 hover:text-green-700 p-1" title="Atualizar Foto e Preco">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+                </button>
                 <button onclick="editProduct('${p.id}')" class="text-blue-500 hover:text-blue-700 p-1" title="Editar">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
                 </button>
@@ -843,7 +940,129 @@
     }
 
     // === INIT ===
-    loadDashboard();
+    // Verificar se esta logado ao carregar
+    checkAuth();
+
+    async function checkAuth() {
+      const res = await api('/api/auth/check');
+      if (res.success && res.loggedIn) {
+        showApp(res.user);
+      } else {
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('app-main').style.display = 'none';
+    }
+
+    function showApp(user) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-main').style.display = 'flex';
+      document.getElementById('user-display-name').textContent = user.name || user.username;
+      loadDashboard();
+    }
+
+    // Login form
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('login-error');
+      errEl.classList.add('hidden');
+      const btn = document.getElementById('login-btn');
+      btn.textContent = 'Entrando...';
+      btn.disabled = true;
+
+      const res = await api('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('login-username').value,
+          password: document.getElementById('login-password').value
+        })
+      });
+
+      btn.textContent = 'Entrar';
+      btn.disabled = false;
+
+      if (res.success) {
+        showApp(res.user);
+      } else {
+        errEl.textContent = res.error || 'Usuario ou senha incorretos';
+        errEl.classList.remove('hidden');
+      }
+    });
+
+    // Logout
+    async function doLogout() {
+      await api('/api/auth/logout', { method: 'POST' });
+      showLogin();
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+    }
+
+    // === MODAL FOTO + PRECO ===
+    function openQuickPhotoPrice(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      document.getElementById('pp-product-id').value = product.id;
+      document.getElementById('pp-product-name').textContent = product.name;
+      document.getElementById('pp-product-current').textContent = 'Preco atual: ' + product.price;
+      document.getElementById('pp-price').value = product.price || '';
+      document.getElementById('pp-price-delivery').value = product.price_delivery || '';
+      const preview = document.getElementById('pp-image-preview');
+      if (product.image) {
+        preview.innerHTML = '<img src="' + product.image + '" class="w-full h-full object-cover rounded-xl">';
+      } else {
+        preview.innerHTML = '<div class="text-center"><svg class="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg><span class="text-sm">Clique para tirar ou escolher foto</span></div>';
+      }
+      document.getElementById('pp-image-input').value = '';
+      document.getElementById('modal-photo-price').classList.add('active');
+    }
+
+    function closePhotoPrice() {
+      document.getElementById('modal-photo-price').classList.remove('active');
+    }
+
+    function previewPhotoPrice(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('pp-image-preview').innerHTML =
+            '<img src="' + e.target.result + '" class="w-full h-full object-cover rounded-xl">';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    document.getElementById('form-photo-price').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('pp-product-id').value;
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+
+      const formData = new FormData();
+      formData.append('name', product.name);
+      formData.append('category', product.category);
+      formData.append('price', document.getElementById('pp-price').value);
+      formData.append('price_delivery', document.getElementById('pp-price-delivery').value);
+      formData.append('description', product.description || '');
+      formData.append('featured', product.featured ? 'true' : 'false');
+      formData.append('quantity', product.quantity || 0);
+      formData.append('min_quantity', product.min_quantity || 5);
+
+      const imageInput = document.getElementById('pp-image-input');
+      if (imageInput.files[0]) {
+        formData.append('image', imageInput.files[0]);
+      }
+
+      const res = await api('/api/products/' + id, { method: 'PUT', body: formData });
+      if (res.success) {
+        toast('Foto e preco atualizados!', 'success');
+        closePhotoPrice();
+        loadProducts();
+      }
+    });
   </script>
 </body>
 </html>
