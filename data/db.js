@@ -246,10 +246,23 @@ function createProduct(data) {
 }
 
 function updateProduct(id, data) {
+  const current = getProduct(id);
+  if (!current) return;
+
+  const name = data.name !== undefined ? data.name : current.name;
+  const category = data.category !== undefined ? data.category : current.category;
+  const price = data.price !== undefined ? data.price : current.price;
+  const price_delivery = data.price_delivery !== undefined ? data.price_delivery : current.price_delivery;
+  const description = data.description !== undefined ? data.description : current.description;
+  const image = data.image !== undefined ? data.image : current.image;
+  const brand = data.brand !== undefined ? data.brand : current.brand;
+  const featured = data.featured !== undefined ? (data.featured ? 1 : 0) : current.featured;
+
   db.run(
     "UPDATE products SET name = ?, category = ?, price = ?, price_delivery = ?, description = ?, image = ?, brand = ?, featured = ?, updated_at = datetime('now', 'localtime') WHERE id = ?",
-    [data.name, data.category, data.price, data.price_delivery || null, data.description || '', data.image || null, data.brand || null, data.featured ? 1 : 0, id]
+    [name, category, price, price_delivery, description, image, brand, featured, id]
   );
+  
   if (data.quantity !== undefined) {
     db.run(
       "UPDATE stock SET quantity = ?, min_quantity = ?, updated_at = datetime('now', 'localtime') WHERE product_id = ?",
@@ -293,15 +306,14 @@ function getMovements(productId, limit = 50) {
       ORDER BY m.created_at DESC
       LIMIT ?
     `, [productId, limit]);
-  } else {
-    return queryAll(`
-      SELECT m.*, p.name as product_name
-      FROM movements m
-      JOIN products p ON m.product_id = p.id
-      ORDER BY m.created_at DESC
-      LIMIT ?
-    `, [limit]);
   }
+  return queryAll(`
+    SELECT m.*, p.name as product_name
+    FROM movements m
+    JOIN products p ON m.product_id = p.id
+    ORDER BY m.created_at DESC
+    LIMIT ?
+  `, [limit]);
 }
 
 function getStockSummary() {
