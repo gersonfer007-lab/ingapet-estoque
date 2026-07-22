@@ -1,1 +1,222 @@
-Ly8gU2Vydmlkb3IgcHJpbmNpcGFsIGRvIHNpc3RlbWEgZGUgZ2VzdMOjbyBJbmfDoVBldApjb25zdCBleHByZXNzID0gcmVxdWlyZSgnZXhwcmVzcycpOwpjb25zdCBtdWx0ZXIgPSByZXF1aXJlKCdtdWx0ZXInKTsKY29uc3Qgc2hhcnAgPSByZXF1aXJlKCdzaGFycCcpOwpjb25zdCBwYXRoID0gcmVxdWlyZSgncGF0aCcpOwpjb25zdCBmcyA9IHJlcXVpcmUoJ2ZzJyk7CmNvbnN0IHNlc3Npb24gPSByZXF1aXJlKCdleHByZXNzLXNlc3Npb24nKTsKY29uc3QgYmNyeXB0ID0gcmVxdWlyZSgnYmNyeXB0anMnKTsKY29uc3QgZGIgPSByZXF1aXJlKCcuL2RhdGEvZGInKTsKCmNvbnN0IGFwcCA9IGV4cHJlc3MoKTsKY29uc3QgUE9SVCA9IHBhcnNlSW50KHByb2Nlc3MuZW52LlBPUlQpIHx8IDMwMDA7CgovLyBNaWRkbGV3YXJlCmFwcC51c2UoZXhwcmVzcy5qc29uKHsgbGltaXQ6ICcxMG1iJyB9KSk7CmFwcC51c2UoZXhwcmVzcy51cmxlbmNvZGVkKHsgZXh0ZW5kZWQ6IHRydWUsIGxpbWl0OiAnMTBtYicgfSkpOwphcHAudXNlKCcvdXBsb2FkcycsIGV4cHJlc3Muc3RhdGljKHBhdGguam9pbihfX2Rpcm5hbWUsICd1cGxvYWRzJykpKTsKCi8vIFNlc3NhbwphcHAudXNlKHNlc3Npb24oewogIHNlY3JldDogcHJvY2Vzcy5lbnYuU0VTU0lPTl9TRUNSRVQgfHwgJ2luZ2FwZXQtc2VjcmV0LTIwMjQtc2VndXJvJywKICByZXNhdmU6IGZhbHNlLAogIHNhdmVVbmluaXRpYWxpemVkOiBmYWxzZSwKICBjb29raWU6IHsKICAgIHNlY3VyZTogZmFsc2UsCiAgICBodHRwT25seTogdHJ1ZSwKICAgIG1heEFnZTogMjQgKiA2MCAqIDYwICogMTAwMCAvLyAyNCBob3JhcwogIH0KfSkpOwoKLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLy8gQVVURU5USUNBQ0FPCi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgpmdW5jdGlvbiByZXF1aXJlQXV0aChyZXEsIHJlcywgbmV4dCkgewogIGlmIChyZXEuc2Vzc2lvbiAmJiByZXEuc2Vzc2lvbi51c2VyKSB7CiAgICByZXR1cm4gbmV4dCgpOwogIH0KICBpZiAocmVxLnBhdGguc3RhcnRzV2l0aCgnL2FwaS8nKSkgewogICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAxKS5qc29uKHsgc3VjY2VzczogZmFsc2UsIGVycm9yOiAnTmFvIGF1dG9yaXphZG8uIEZhY2EgbG9naW4uJyB9KTsKICB9CiAgcmVzLnJlZGlyZWN0KCcvbG9naW4nKTsKfQoKYXBwLmdldCgnL2xvZ2luJywgKHJlcSwgcmVzKSA9PiB7CiAgaWYgKHJlcS5zZXNzaW9uICYmIHJlcS5zZXNzaW9uLnVzZXIpIHJldHVybiByZXMucmVkaXJlY3QoJy8nKTsKICByZXMuc2VuZEZpbGUocGF0aC5qb2luKF9fZGlybmFtZSwgJ3B1YmxpYycsICdpbmRleC5odG1sJykpOwp9KTsKCmFwcC5wb3N0KCcvYXBpL2F1dGgvbG9naW4nLCAocmVxLCByZXMpID0+IHsKICBjb25zdCB7IHVzZXJuYW1lLCBwYXNzd29yZCB9ID0gcmVxLmJvZHk7CiAgaWYgKCF1c2VybmFtZSB8fCAhcGFzc3dvcmQpIHsKICAgIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7IHN1Y2Nlc3M6IGZhbHNlLCBlcnJvcjogJ1VzdWFyaW8gZSBzZW5oYSBvYnJpZ2F0b3Jpb3MnIH0pOwogIH0KICBjb25zdCB1c2VyID0gZGIuZ2V0VXNlckJ5VXNlcm5hbWUodXNlcm5hbWUpOwogIGlmICghdXNlciB8fCAhYmNyeXB0LmNvbXBhcmVTeW5jKHBhc3N3b3JkLCB1c2VyLnBhc3N3b3JkKSkgewogICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAxKS5qc29uKHsgc3VjY2VzczogZmFsc2UsIGVycm9yOiAnVXN1YXJpbyBvdSBzZW5oYSBpbmNvcnJldG9zJyB9KTsKICB9CiAgcmVxLnNlc3Npb24udXNlciA9IHsgaWQ6IHVzZXIuaWQsIHVzZXJuYW1lOiB1c2VyLnVzZXJuYW1lLCBuYW1lOiB1c2VyLm5hbWUsIHJvbGU6IHVzZXIucm9sZSB9OwogIHJlcy5qc29uKHsgc3VjY2VzczogdHJ1ZSwgdXNlcjogeyBuYW1lOiB1c2VyLm5hbWUsIHVzZXJuYW1lOiB1c2VyLnVzZXJuYW1lLCByb2xlOiB1c2VyLnJvbGUgfSB9KTsKfSk7CgphcHAuZ2V0KCcvYXBpL2F1dGgvY2hlY2snLCAocmVxLCByZXMpID0+IHsKICBpZiAocmVxLnNlc3Npb24gJiYgcmVxLnNlc3Npb24udXNlcikgewogICAgcmV0dXJuIHJlcy5qc29uKHsgc3VjY2VzczogdHJ1ZSwgbG9nZ2VkSW46IHRydWUsIHVzZXI6IHJlcS5zZXNzaW9uLnVzZXIgfSk7CiAgfQogIHJlcy5qc29uKHsgc3VjY2VzczogdHJ1ZSwgbG9nZ2VkSW46IGZhbHNlIH0pOwp9KTsKCmFwcC5wb3N0KCcvYXBpL2F1dGgvbG9nb3V0JywgKHJlcSwgcmVzKSA9PiB7CiAgcmVxLnNlc3Npb24uZGVzdHJveSgpOwogIHJlcy5qc29uKHsgc3VjY2VzczogdHJ1ZSwgbWVzc2FnZTogJ0xvZ291dCByZWFsaXphZG8nIH0pOwp9KTsKCi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci8vIFJPVEFTIFBVQkxJQ0FTCi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgphcHAuZ2V0KCcvYXBpL2V4cG9ydC9zaXRlLWRhdGEnLCAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgcHJvZHVjdHMgPSBkYi5nZXRBbGxQcm9kdWN0cygpOwogICAgY29uc3Qgc2l0ZVByb2R1Y3RzID0gcHJvZHVjdHMubWFwKHAgPT4gKHsKICAgICAgbmFtZTogcC5uYW1lLAogICAgICBwcmljZTogcC5wcmljZSwKICAgICAgY2F0ZWdvcnk6IHAuY2F0ZWdvcnksCiAgICAgIGltYWdlOiBwLmltYWdlIHx8IGBpbWFnZXMvcHJvZHVjdHMvZGVmYXVsdC5qcGdgLAogICAgICBkZXNjOiBwLmRlc2NyaXB0aW9uLAogICAgICBiYWRnZTogcC5mZWF0dXJlZCA/ICdEZXN0YXF1ZScgOiBudWxsLAogICAgICBwcmljZURlbGl2ZXJ5OiBwLnByaWNlX2RlbGl2ZXJ5IHx8IG51bGwsCiAgICAgIHN0b2NrOiBwLnF1YW50aXR5LAogICAgICBhdmFpbGFibGU6IHAucXVhbnRpdHkgPiAwLAogICAgfSkpOwogICAgcmVzLmpzb24oeyBzdWNjZXNzOiB0cnVlLCBsYXN0VXBkYXRlZDogbmV3IERhdGUoKS50b0lTT1N0cmluZygpLCBwcm9kdWN0czogc2l0ZVByb2R1Y3RzIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBzdWNjZXNzOiBmYWxzZSwgZXJyb3I6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7CgovLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQovLyBST1RBUyBQUk9URUdJREFTCi8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cgpjb25zdCBzdG9yYWdlID0gbXVsdGVyLm1lbW9yeVN0b3JhZ2UoKTsKY29uc3QgdXBsb2FkID0gbXVsdGVyKHsgc3RvcmFnZSwgbGltaXRzOiB7IGZpbGVTaXplOiAxMCAqIDEwMjQgKiAxMDI0IH0gfSk7Cgphc3luYyBmdW5jdGlvbiBzYXZlSW1hZ2UoZmlsZSkgewogIGNvbnN0IGJ1ZmZlciA9IGF3YWl0IHNoYXJwKGZpbGUuYnVmZmVyKQogICAgLnJlc2l6ZSg4MDAsIDgwMCwgeyBmaXQ6ICdpbnNpZGUnLCB3aXRob3V0RW5sYXJnZW1lbnQ6IHRydWUgfSkKICAgIC5qcGVnKHsgcXVhbGl0eTogODAgfSkKICAgIC50b0J1ZmZlcigpOwogIHJldHVybiBgZGF0YTppbWFnZS9qcGVnO2Jhc2U2NCwke2J1ZmZlci50b1N0cmluZygnYmFzZTY0Jyl9YDsKfQoKYXBwLmdldCgnL2FwaS9wcm9kdWN0cycsIHJlcXVpcmVBdXRoLCAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgcHJvZHVjdHMgPSBkYi5nZXRBbGxQcm9kdWN0cygpOwogICAgcmVzLmpzb24oeyBzdWNjZXNzOiB0cnVlLCBkYXRhOiBwcm9kdWN0cyB9KTsKICB9IGNhdGNoIChlcnIpIHsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgc3VjY2VzczogZmFsc2UsIGVycm9yOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLnBvc3QoJy9hcGkvcHJvZHVjdHMnLCByZXF1aXJlQXV0aCwgdXBsb2FkLnNpbmdsZSgnaW1hZ2UnKSwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IGRhdGEgPSB7IC4uLnJlcS5ib2R5IH07CiAgICBkYXRhLmZlYXR1cmVkID0gZGF0YS5mZWF0dXJlZCA9PT0gJ3RydWUnIHx8IGRhdGEuZmVhdHVyZWQgPT09ICcxJzsKICAgIGlmIChyZXEuZmlsZSkgewogICAgICBkYXRhLmltYWdlID0gYXdhaXQgc2F2ZUltYWdlKHJlcS5maWxlKTsKICAgIH0KICAgIGNvbnN0IGlkID0gZGIuY3JlYXRlUHJvZHVjdChkYXRhKTsKICAgIHJlcy5qc29uKHsgc3VjY2VzczogdHJ1ZSwgZGF0YTogeyBpZCB9LCBtZXNzYWdlOiAnUHJvZHV0byBjcmlhZG8gY29tIHN1Y2Vzc28nIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBzdWNjZXNzOiBmYWxzZSwgZXJyb3I6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7CgphcHAucHV0KCcvYXBpL3Byb2R1Y3RzLzppZCcsIHJlcXVpcmVBdXRoLCB1cGxvYWQuc2luZ2xlKCdpbWFnZScpLCBhc3luYyAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgZGF0YSA9IHsgLi4ucmVxLmJvZHkgfTsKICAgIGRhdGEuZmVhdHVyZWQgPSBkYXRhLmZlYXR1cmVkID09PSAndHJ1ZScgfHwgZGF0YS5mZWF0dXJlZCA9PT0gJzEnOwogICAgCiAgICBpZiAocmVxLmZpbGUpIHsKICAgICAgZGF0YS5pbWFnZSA9IGF3YWl0IHNhdmVJbWFnZShyZXEuZmlsZSk7CiAgICB9IGVsc2UgewogICAgICBjb25zdCBwcm9kdWN0ID0gZGIuZ2V0UHJvZHVjdChyZXEucGFyYW1zLmlkKTsKICAgICAgaWY (truncated)
+// Servidor principal do sistema de gestão IngáPet
+const express = require('express');
+const multer = require('multer');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const db = require('./data/db');
+const cors = require('cors');
+
+const app = express();
+const PORT = parseInt(process.env.PORT) || 3000;
+
+// Configuração de CORS
+const allowedOrigins = [
+  'https://ingapet.pages.dev',
+  'https://ingagaspetshop.com.br',
+  'https://www.ingagaspetshop.com.br',
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // permitir requests sem origin (como apps mobile ou curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
+
+// Middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Sessao
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'ingapet-secret-2024-seguro',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
+}));
+
+// ============================================
+// AUTENTICACAO
+// ============================================
+
+function requireAuth(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  }
+  if (req.path.startsWith('/api/')) {
+    return res.status(401).json({ success: false, error: 'Nao autorizado. Faca login.' });
+  }
+  res.redirect('/login');
+}
+
+app.get('/login', (req, res) => {
+  if (req.session && req.session.user) return res.redirect('/');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ success: false, error: 'Usuario e senha obrigatorios' });
+  }
+  const user = db.getUserByUsername(username);
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ success: false, error: 'Usuario ou senha incorretos' });
+  }
+  req.session.user = { id: user.id, username: user.username, name: user.name, role: user.role };
+  res.json({ success: true, user: { name: user.name, username: user.username, role: user.role } });
+});
+
+app.get('/api/auth/check', (req, res) => {
+  if (req.session && req.session.user) {
+    return res.json({ success: true, loggedIn: true, user: req.session.user });
+  }
+  res.json({ success: true, loggedIn: false });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  req.session.destroy();
+  res.json({ success: true, message: 'Logout realizado' });
+});
+
+// ============================================
+// ROTAS PUBLICAS
+// ============================================
+
+// Exportar dados para site publico (CORS habilitado acima)
+app.get('/api/export/site-data', (req, res) => {
+  try {
+    const products = db.getAllProducts();
+    const siteProducts = products.map(p => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      category: p.category,
+      image: p.image || `images/products/default.jpg`,
+      desc: p.description,
+      badge: p.featured ? 'Destaque' : null,
+      priceDelivery: p.price_delivery || null,
+      stock: p.quantity,
+      available: p.quantity > 0,
+    }));
+    res.json({ success: true, lastUpdated: new Date().toISOString(), products: siteProducts });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================
+// ROTAS PROTEGIDAS
+// ============================================
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+
+async function saveImage(file) {
+  const buffer = await sharp(file.buffer)
+    .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 80 })
+    .toBuffer();
+  return `data:image/jpeg;base64,${buffer.toString('base64')}`;
+}
+
+app.get('/api/products', requireAuth, (req, res) => {
+  try {
+    const products = db.getAllProducts();
+    res.json({ success: true, data: products });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/products', requireAuth, upload.single('image'), async (req, res) => {
+  try {
+    const data = { ...req.body };
+    data.featured = data.featured === 'true' || data.featured === '1';
+    if (req.file) {
+      data.image = await saveImage(req.file);
+    }
+    const id = db.createProduct(data);
+    res.json({ success: true, data: { id }, message: 'Produto criado com sucesso' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/products/:id', requireAuth, upload.single('image'), async (req, res) => {
+  try {
+    const data = { ...req.body };
+    data.featured = data.featured === 'true' || data.featured === '1';
+    
+    if (req.file) {
+      data.image = await saveImage(req.file);
+    } else {
+      const product = db.getProduct(req.params.id);
+      if (product) data.image = product.image;
+    }
+    
+    if (data.initial_stock !== undefined) data.quantity = parseInt(data.initial_stock);
+    if (data.min_quantity !== undefined) data.min_quantity = parseInt(data.min_quantity);
+
+    db.updateProduct(req.params.id, data);
+    res.json({ success: true, message: 'Produto atualizado com sucesso' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/products/:id', requireAuth, (req, res) => {
+  try {
+    db.deleteProduct(req.params.id);
+    res.json({ success: true, message: 'Produto removido' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/stock/move', requireAuth, (req, res) => {
+  try {
+    const { product_id, type, quantity, reason, notes, reference } = req.body;
+    const newQty = db.addStockMovement(product_id, type, parseInt(quantity), reason, notes, reference);
+    res.json({ success: true, new_quantity: newQty, message: `Movimentacao registrada. Novo estoque: ${newQty}` });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/stock/summary', requireAuth, (req, res) => {
+  try {
+    const summary = db.getStockSummary();
+    res.json({ success: true, data: summary });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+(async () => {
+  await db.initDatabase();
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Sistema IngaPet rodando na porta ${PORT}`);
+  });
+})();
