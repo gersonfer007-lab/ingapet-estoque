@@ -30,8 +30,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Aumentar limites para fotos grandes em Base64
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(session({
@@ -90,14 +91,21 @@ app.get('/api/export/site-data', (req, res) => {
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
+// Multer com limite de 20MB para fotos de celular
 const storage = multer.memoryStorage();
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 async function saveImage(file) {
-  const buffer = await sharp(file.buffer)
-    .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
-    .jpeg({ quality: 80 }).toBuffer();
-  return `data:image/jpeg;base64,${buffer.toString('base64')}`;
+  try {
+    const buffer = await sharp(file.buffer)
+      .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 75 })
+      .toBuffer();
+    return `data:image/jpeg;base64,${buffer.toString('base64')}`;
+  } catch (err) {
+    console.error('Sharp error:', err);
+    throw new Error('Erro ao processar imagem');
+  }
 }
 
 app.get('/api/products', requireAuth, (req, res) => {
@@ -108,10 +116,15 @@ app.post('/api/products', requireAuth, upload.single('image'), async (req, res) 
   try {
     const data = { ...req.body };
     data.featured = data.featured === 'true' || data.featured === '1';
-    if (req.file) data.image = await saveImage(req.file);
+    if (req.file) {
+      data.image = await saveImage(req.file);
+    }
     const id = db.createProduct(data);
     res.json({ success: true, data: { id }, message: 'Produto criado' });
-  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+  } catch (err) {
+    console.error('Create product error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 app.put('/api/products/:id', requireAuth, upload.single('image'), async (req, res) => {
@@ -128,7 +141,10 @@ app.put('/api/products/:id', requireAuth, upload.single('image'), async (req, re
     if (data.min_quantity !== undefined) data.min_quantity = parseInt(data.min_quantity);
     db.updateProduct(req.params.id, data);
     res.json({ success: true, message: 'Produto atualizado' });
-  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+  } catch (err) {
+    console.error('Update product error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 app.delete('/api/products/:id', requireAuth, (req, res) => {
@@ -149,8 +165,7 @@ app.post('/api/stock/move', requireAuth, (req, res) => {
 app.get('/api/stock/movements', requireAuth, (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
-    const movements = db.getMovements(req.query.product_id, limit);
-    res.json({ success: true, data: movements });
+    res.json({ success: true, data: db.getMovements(req.query.product_id, limit) });
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
