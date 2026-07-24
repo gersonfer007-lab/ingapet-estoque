@@ -1,4 +1,3 @@
-// Servidor principal do sistema de gestão IngáPet
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
@@ -11,7 +10,7 @@ const db = require('./data/db');
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
 
-// CORS manual para evitar erros de conexão entre site e estoque
+// CORS manual
 app.use((req, res, next) => {
   const allowedOrigins = [
     'https://ingapet.pages.dev',
@@ -27,19 +26,14 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });
 
-// Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Sessão
 app.use(session({
   secret: process.env.SESSION_SECRET || 'ingapet-secret-2024-seguro',
   resave: false,
@@ -51,7 +45,6 @@ app.use(session({
   }
 }));
 
-// Autenticação
 function requireAuth(req, res, next) {
   if (req.session && req.session.user) return next();
   if (req.path.startsWith('/api/')) return res.status(401).json({ success: false, error: 'Não autorizado' });
@@ -66,13 +59,10 @@ app.get('/login', (req, res) => {
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ success: false, error: 'Preencha todos os campos' });
-  
   const user = db.getUserByUsername(username.toLowerCase().trim());
-  
   if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.status(401).json({ success: false, error: 'Usuário ou senha incorretos' });
   }
-  
   req.session.user = { id: user.id, username: user.username, name: user.name, role: user.role };
   res.json({ success: true, user: { name: user.name, username: user.username, role: user.role } });
 });
@@ -87,7 +77,6 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ success: true, message: 'Logout realizado' });
 });
 
-// API Pública
 app.get('/api/export/site-data', (req, res) => {
   try {
     const products = db.getAllProducts();
@@ -98,12 +87,9 @@ app.get('/api/export/site-data', (req, res) => {
       stock: p.quantity, available: p.quantity > 0,
     }));
     res.json({ success: true, lastUpdated: new Date().toISOString(), products: siteProducts });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
+  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
-// API Protegida
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
@@ -157,6 +143,14 @@ app.post('/api/stock/move', requireAuth, (req, res) => {
     const { product_id, type, quantity, reason, notes, reference } = req.body;
     const newQty = db.addStockMovement(product_id, type, parseInt(quantity), reason, notes, reference);
     res.json({ success: true, new_quantity: newQty, message: `Novo estoque: ${newQty}` });
+  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+});
+
+app.get('/api/stock/movements', requireAuth, (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const movements = db.getMovements(req.query.product_id, limit);
+    res.json({ success: true, data: movements });
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
